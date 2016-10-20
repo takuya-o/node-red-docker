@@ -1,0 +1,25 @@
+# -*- coding: utf-8 -*-
+# Created by Takuya Ono
+# see: https://hub.docker.com/r/nodered/node-red-docker/
+
+node-red:
+#  image: nodered/node-red-docker
+#  build: latest
+  build: .
+  dockerfile: slim/Dockerfile
+#  restart: always
+#  environment:
+#    - FLOWS=my_flows.joson
+#    - NODE_OPTIONS=--max_old_space_side=128
+  volumes:
+    - /etc/localtime:/etc/localtime:ro
+#  ports:
+#    - "2222:22"  #22,80,443
+  domainname: home.on-o.com
+  hostname: node-red
+  dns:
+  - 192.168.193.1
+  dns_search:
+  - home.on-o.com
+  - on-o.com
+
