@@ -8,11 +8,16 @@ node-red:
   build: .
   dockerfile: slim/Dockerfile
 #  restart: always
-#  environment:
+  environment:
+    - KEYPATH=on-o.com
+    #ここはKYEPATHなどhttpsの準備をしているがDockerfileでは未反映
+    #Secret Variablesはgitlab-ciのときだけ
 #    - FLOWS=my_flows.joson
 #    - NODE_OPTIONS=--max_old_space_side=128
   volumes:
     - /etc/localtime:/etc/localtime:ro
+    - /etc/letsencrypt:/etc/letsencrypt:ro
+    - ./data:/data
 #  ports:
 #    - "2222:22"  #22,80,443
   domainname: home.on-o.com
