@@ -5,9 +5,10 @@
 node-red:
 #  image: nodered/node-red-docker
 #  build: latest
-  build: .
-  dockerfile: slim/Dockerfile
-#  restart: always
+  image: nodered/node-red-docker:slim
+#  build: .
+#  dockerfile: slim/Dockerfile
+  restart: always
   environment:
     - KEYPATH=on-o.com
     #ここはKYEPATHなどhttpsの準備をしているがDockerfileでは未反映
