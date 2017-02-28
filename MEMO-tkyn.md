@@ -14,6 +14,9 @@ makeHttpsKey.sh に外だしした
 
 docker-compose ブランチで対応
 
+### Let's Encrypt版もあるよ
+letsencrypt.sh
+
 ## node-red-contribu-ui
 https://localhost:1880/ui/ でアクセスできるUI部品
 をインストールするスクリプトinstallNodeRedContribUI.sh
