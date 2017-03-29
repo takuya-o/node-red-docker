@@ -17,9 +17,32 @@ docker-compose ブランチで対応
 ### Let's Encrypt版もあるよ
 letsencrypt.sh
 
-## node-red-contribu-ui
+## Node-RED ダッシュボード
 https://localhost:1880/ui/ でアクセスできるUI部品
-をインストールするスクリプトinstallNodeRedContribUI.sh
+をインストールするスクリプトinstallNodeRedDashboard.sh
+
+### node-red-adminツール
+dockerhubサイトではホスト側にnode-red-adminをインストールする方法も紹介されている
+```bash
+$ sudo npm install -g node-red-admin  #グローバルにadminツールをインストール
+$ node-red-admin target http://node-red.example.com/admin install node-red-dashboard
+```
+target の defaultは http://localhost:1880/
+
+#### Adminツール サブコマンド
+see: [Node-RED日本ユーザ会 : Adminツール](https://nodered.jp/docs/node-red-admin)
+* list - インストール済みNodeのリストを表示する
+* info - モジュールまたはNodeセットの詳細情報を表示する
+* enable - 指定したモジュールまたはNodeセットを有効にする
+* disable - 指定したモジュールまたはNodeセットを無効にする
+* search - npm公開リポジトリで指定したキーワードに関連するNode-REDモジュールを検索する
+* ninstall - npm公開リポジトリからNode-REDモジュールをインストールする
+* remove - npm公開リポジトリからインストールしたNode-REDモジュールを削除する
+
+
+## Node-RED RSSフィードパース
+RSSを読み込むノード をインストールするスクリプト
+node-red-node-feedparserは、既に取り込まれていた。
 
 ## ./data*
 HTTP/HTTPS版、UI有り版、flows.json空とかいろいろ試した
