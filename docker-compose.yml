@@ -10,6 +10,7 @@ node-red:
 #  dockerfile: slim/Dockerfile
   restart: always
   environment:
+    - NODE_OPTIONS=--max-old-space-size=2048
     - KEYPATH=on-o.com
     #ここはKYEPATHなどhttpsの準備をしているがDockerfileでは未反映
     #Secret Variablesはgitlab-ciのときだけ
