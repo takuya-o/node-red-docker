@@ -17,9 +17,22 @@ docker-compose ブランチで対応
 ### Let's Encrypt版もあるよ
 letsencrypt.sh
 
+# 追加Node
+
 ## Node-RED ダッシュボード
 https://localhost:1880/ui/ でアクセスできるUI部品
 をインストールするスクリプトinstallNodeRedDashboard.sh
+
+## Google URL Shortner Service
+GoogleのURL短縮
+```sh
+$ docker-compose exec node-red \
+	       sh -c "cd /data;npm install node-red-contrib-shorturl" &&\
+$ docker-compose restart node-red
+```
+
+## node-red-admin
+じつはいらなかった。
 
 ### node-red-adminツール
 dockerhubサイトではホスト側にnode-red-adminをインストールする方法も紹介されている
@@ -44,6 +57,7 @@ see: [Node-RED日本ユーザ会 : Adminツール](https://nodered.jp/docs/node-
 RSSを読み込むノード をインストールするスクリプト
 node-red-node-feedparserは、既に取り込まれていた。
 
-## ./data*
+
+# おまけ:  ./data* について
 HTTP/HTTPS版、UI有り版、flows.json空とかいろいろ試した
 
