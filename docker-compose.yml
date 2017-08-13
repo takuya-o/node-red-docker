@@ -29,9 +29,5 @@ services:
     - /etc/letsencrypt:/etc/letsencrypt:ro
     - ./data:/data
 #    ports:
-#    - "2222:22"  #22,80,443
-    domainname: home.on-o.com
+#    - "80:80"  #80,443
     hostname: node-red
-    dns_search:
-    - home.on-o.com
-    - on-o.com
