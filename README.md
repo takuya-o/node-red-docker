@@ -14,12 +14,13 @@ docker container.
 ## Start Node-RED
 
 After setting up, restarting Node-RED is just run,
+
 	docker-compose up -d
 
 ## Upgrade Node-RED
 
 	docker-compose pull
-	docker-compose buil
+	docker-compose build
 	docker-compose down
 	docker-compose up -d
 
