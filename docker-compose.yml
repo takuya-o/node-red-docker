@@ -24,8 +24,8 @@ node-red:
 #    - "2222:22"  #22,80,443
   domainname: home.on-o.com
   hostname: node-red
-  dns:
-  - 192.168.193.1
+  #  dns:
+  #- 192.168.193.1
   dns_search:
   - home.on-o.com
   - on-o.com
