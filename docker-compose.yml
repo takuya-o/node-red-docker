@@ -1,0 +1,33 @@
+# -*- coding: utf-8 -*-
+# Created by Takuya Ono
+# see: https://hub.docker.com/r/nodered/node-red-docker/
+
+version: '2'
+services:
+
+  node-red:
+#    image: nodered/node-red-docker
+#    build: latest
+
+    #image: nodered/node-red-docker:slim
+    #$CI_環境変数は、GitLab-CIでは自動設定 ローカル時には.envより取得
+    image: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_NAME
+    #ローカルビルドする前でもなくdockerhubと同じイメージができるはず
+    build:
+      context: .
+      dockerfile: slim/Dockerfile
+    restart: always
+    environment:
+    - NODE_OPTIONS=--max-old-space-size=2048
+    - KEYPATH=on-o.com
+    #ここはKYEPATHなどhttpsの準備をしているがDockerfileでは未反映
+    #Secret Variablesはgitlab-ciのときだけ
+#    - FLOWS=my_flows.joson
+#    - NODE_OPTIONS=--max_old_space_side=128
+    volumes:
+    - /etc/localtime:/etc/localtime:ro
+    - /etc/letsencrypt:/etc/letsencrypt:ro
+    - ./data:/data
+#    ports:
+#    - "80:80"  #80,443
+    hostname: node-red
