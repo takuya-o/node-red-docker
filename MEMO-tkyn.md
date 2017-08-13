@@ -1,3 +1,20 @@
+## upgrade
+```bash
+$ git pull github
+$ git push . github/maser:master
+
+$ git merge master
+
+$ docker-compose pull
+$ docker-compose build
+
+$ docker-compose down
+$ docker-compose up -d
+
+$ docker cp `docker-compose ps -q`:/usr/src/node-red/node_modules/node-red/settings.js .
+```
+
+
 ## HTTP版
 ./data/settings.jpを作る copySettings.sh
 ただ、HTTP版では、WebSocketがproxy超えられないので、
@@ -22,6 +39,7 @@ letsencrypt.sh
 ## Node-RED ダッシュボード
 https://localhost:1880/ui/ でアクセスできるUI部品
 をインストールするスクリプトinstallNodeRedDashboard.sh
+(URL短縮も一緒に入る)
 
 ## Google URL Shortner Service
 GoogleのURL短縮
