@@ -1,7 +1,7 @@
 ## upgrade
 ```bash
 $ git pull github
-$ git push . github/maser:master
+$ git push . github/master:master
 
 $ git merge master
 
