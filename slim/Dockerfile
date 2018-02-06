@@ -1,5 +1,8 @@
 FROM node:6-alpine
 
+RUN apk --no-cache upgrade \
+ && apk --no-cache add git openssh-client
+
 # Home directory for Node-RED application source code.
 RUN mkdir -p /usr/src/node-red
 
