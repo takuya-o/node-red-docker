@@ -14,6 +14,18 @@ $ docker-compose up -d
 $ docker cp `docker-compose ps -q`:/usr/src/node-red/node_modules/node-red/settings.js .
 ```
 
+## release版作成
+```bash
+$ git co release
+$ git merge master
+$ git-check-date.sh 1
+$ git merge --squash docker-compose
+$ git reset HEAD MEMO-tkyn.md letsencrypt.sh
+$ git commit
+$ git-check-date.sh 1
+$ git push origin
+$ git push github release:master
+```
 
 ## HTTP版
 ./data/settings.jpを作る copySettings.sh
