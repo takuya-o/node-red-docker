@@ -1,3 +1,30 @@
+# Node-RED-Docker on docker-compose
+
+This project support docker-compose which to easy to start up the
+docker container.
+
+## Setting up Node-RED
+
+	cp .env-sample .env
+	docker-compose build --pull
+	docker-compose up -d
+	copySettings.sh
+	docker-compose restart
+
+## Start Node-RED
+
+After setting up, restarting Node-RED is just run,
+
+	docker-compose up -d
+
+## Upgrade Node-RED
+
+	docker-compose pull
+	docker-compose build
+	docker-compose down
+	docker-compose up -d
+
+
 # Node-RED-Docker
 
 [![Greenkeeper badge](https://badges.greenkeeper.io/node-red/node-red-docker.svg)](https://greenkeeper.io/)
