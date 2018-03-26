@@ -27,6 +27,15 @@ $ git push origin
 $ git push github release:master
 ```
 
+## 認証ダイアログを出す
+
+setting.jsのadminAuthの配列にユーザを追加
+
+### bcryptアルゴリズムによるバスワードハッシュ値
+```bash
+$ docker-compose exec node-red node -e "console.log(require('bcryptjs').hashSync(process.argv[1], 8));" パスワード
+```
+
 ## HTTP版
 ./data/settings.jpを作る copySettings.sh
 ただ、HTTP版では、WebSocketがproxy超えられないので、
