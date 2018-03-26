@@ -1,4 +1,5 @@
-FROM node:6-alpine
+ARG NODE_VERSION=6
+FROM node:${NODE_VERSION}-alpine
 
 RUN apk --no-cache upgrade \
  && apk --no-cache add git openssh-client
