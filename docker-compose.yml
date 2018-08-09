@@ -16,6 +16,9 @@ services:
     build:
       context: .
       dockerfile: slim/Dockerfile
+      args:
+      #.envから読む Dockerfileで使う
+      - NODE_VERSION=${NODE_VERSION}
     restart: always
     environment:
     - NODE_OPTIONS=--max-old-space-size=2048
