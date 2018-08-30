@@ -1,1 +1,7 @@
+.env
 data*/
+settings-*.js
+*~
+*.bak
+*.org
+*.tar.gz

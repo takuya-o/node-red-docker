@@ -2,7 +2,7 @@ ARG NODE_VERSION=6
 FROM node:${NODE_VERSION}-alpine
 
 RUN apk --no-cache upgrade \
- && apk --no-cache add git openssh-client
+ && apk --no-cache add git openssh-client python make g++
 
 # Home directory for Node-RED application source code.
 RUN mkdir -p /usr/src/node-red

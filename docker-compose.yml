@@ -6,9 +6,6 @@ version: '2'
 services:
 
   node-red:
-#    image: nodered/node-red-docker
-#    build: latest
-
     #image: nodered/node-red-docker:slim
     #$CI_環境変数は、GitLab-CIでは自動設定 ローカル時には.envより取得
     image: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_NAME
@@ -21,9 +18,10 @@ services:
       - NODE_VERSION=${NODE_VERSION}
     restart: always
     environment:
-    - NODE_OPTIONS=--max-old-space-size=2048
-    - KEYPATH=on-o.com
+    #- NODE_OPTIONS=--max-old-space-size=2048 --stack-size=984
+    - NODE_OPTIONS=${NODE_OPTIONS}
     #ここはKYEPATHなどhttpsの準備をしているがDockerfileでは未反映
+    - KEYPATH=${KEYPATH}
     #Secret Variablesはgitlab-ciのときだけ
 #    - FLOWS=my_flows.joson
 #    - NODE_OPTIONS=--max_old_space_side=128
