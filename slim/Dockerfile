@@ -1,4 +1,4 @@
-ARG NODE_VERSION=6
+ARG NODE_VERSION=8
 FROM node:${NODE_VERSION}-alpine
 
 RUN apk --no-cache upgrade \
