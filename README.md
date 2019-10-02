@@ -1,62 +1,62 @@
-# Node-RED-Docker on docker-compose
-
-This project support docker-compose which to easy to start up the
-docker container.
-
-## Setting up Node-RED
-
-	cp .env-sample .env
-	docker-compose build --pull
-	docker-compose up -d
-	copySettings.sh
-	docker-compose restart
-
-## Start Node-RED
-
-After setting up, restarting Node-RED is just run,
-
-	docker-compose up -d
-
-## Upgrade Node-RED
-
-	docker-compose pull
-	docker-compose build
-	docker-compose down
-	docker-compose up -d
-
-
-# Node-RED-Docker
+# Node-RED Docker
 
 [![Greenkeeper badge](https://badges.greenkeeper.io/node-red/node-red-docker.svg)](https://greenkeeper.io/)
+[![Build Status](https://travis-ci.org/node-red/node-red-docker.svg?branch=master)](https://travis-ci.org/RaymondMouthaan/node-red)
+[![DockerHub Pull](https://img.shields.io/docker/pulls/nodered/node-red-docker.svg)](https://hub.docker.com/r/nodered/node-red/)
 
-This project describes some of the many ways Node-RED can be run under Docker.
-Some basic familiarity with Docker and the
-[Docker Command Line](https://docs.docker.com/engine/reference/commandline/cli/)
-is assumed.
+This project describes some of the many ways Node-RED can be run under Docker and has support for multiple architectures (amd64, arm32v6, arm32v7 and arm64v8).
+Some basic familiarity with Docker and the [Docker Command Line](https://docs.docker.com/engine/reference/commandline/cli/) is assumed.
 
-This project also provides the build for the `nodered/node-red-docker`
-container on [DockerHub](https://hub.docker.com/r/nodered/node-red-docker/).
+As of Node-RED 1.0 this project provides the build for the `nodered/node-red` container on [Docker Hub](https://hub.docker.com/r/nodered/node-red/). Note: the name has changed to `nodered/node-red`.
 
-To run this directly in docker at it's simplest just run
+Previous 0.20.x versions are still available at https://hub.docker.com/r/nodered/node-red-docker.
 
-        docker run -it -p 1880:1880 --name mynodered nodered/node-red-docker
+## Quick Start
+To run in Docker in its simplest form just run:
 
-Let's dissect that command...
+        docker run -it -p 1880:1880 --name mynodered nodered/node-red
 
-        docker run      - run this container... and build locally if necessary first.
-        -it             - attach a terminal session so we can see what is going on
-        -p 1880:1880    - connect local port 1880 to the exposed internal port 1880
-        --name mynodered - give this machine a friendly local name
-        nodered/node-red-docker - the image to base it on - currently Node-RED v0.14.5
+Let's dissect that command:
+
+        docker run              - run this container... and build locally if necessary first.
+        -it                     - attach a terminal session so we can see what is going on
+        -p 1880:1880            - connect local port 1880 to the exposed internal port 1880
+        --name mynodered        - give this machine a friendly local name
+        nodered/node-red        - the image to base it on - currently Node-RED v1.0.0
 
 
-Running that command should give a terminal window with a running instance of Node-RED
+Running that command should give a terminal window with a running instance of Node-RED.
 
         Welcome to Node-RED
         ===================
-        8 Apr 12:13:44 - [info] Node-RED version: v0.14.5
-        8 Apr 12:13:44 - [info] Node.js  version: v4.4.7
-        .... etc
+
+        27 Sep 12:57:10 - [info] Node-RED version: v1.0.0
+        27 Sep 12:57:10 - [info] Node.js  version: v10.16.2
+        27 Sep 12:57:10 - [info] Linux 4.19.58-v7+ arm LE
+        27 Sep 12:57:11 - [info] Loading palette nodes
+        27 Sep 12:57:16 - [info] Settings file  : /data/settings.js
+        27 Sep 12:57:16 - [info] Context store  : 'default' [module=memory]
+        27 Sep 12:57:16 - [info] User directory : /data
+        27 Sep 12:57:16 - [warn] Projects disabled : editorTheme.projects.enabled=false
+        27 Sep 12:57:16 - [info] Flows file     : /data/flows.json
+        27 Sep 12:57:16 - [info] Creating new flow file
+        27 Sep 12:57:17 - [warn]
+
+        ---------------------------------------------------------------------
+        Your flow credentials file is encrypted using a system-generated key.
+
+        If the system-generated key is lost for any reason, your credentials
+        file will not be recoverable, you will have to delete it and re-enter
+        your credentials.
+
+        You should set your own key using the 'credentialSecret' option in
+        your settings file. Node-RED will then re-encrypt your credentials
+        file using your chosen key the next time you deploy a change.
+        ---------------------------------------------------------------------
+
+        27 Sep 12:57:17 - [info] Server now running at http://127.0.0.1:1880/
+
+        [...]
 
 You can then browse to `http://{host-ip}:1880` to get the familiar Node-RED desktop.
 
@@ -64,55 +64,240 @@ The advantage of doing this is that by giving it a name we can manipulate it
 more easily, and by fixing the host port we know we are on familiar ground.
 (Of course this does mean we can only run one instance at a time... but one step at a time folks...)
 
-If we are happy with what we see we can detach the terminal with `Ctrl-p``Ctrl-q` - the container will keep running in the background.
+If we are happy with what we see we can detach the terminal with `Ctrl-p` `Ctrl-q` - the container will keep running in the background.
 
 To reattach to the terminal (to see logging) run:
 
         $ docker attach mynodered
 
-If you need to restart the container (e.g. after a reboot or restart of the Docker daemon)
+If you need to restart the container (e.g. after a reboot or restart of the Docker daemon):
 
         $ docker start mynodered
 
-and stop it again when required
+and stop it again when required:
 
         $ docker stop mynodered
 
-_**Note** : this Dockerfile is configured to store the flows.json file and any
+_**Note**: this Dockerfile is configured to store the flows.json file and any
 extra nodes you install "outside" of the container. We do this so that you may rebuild the underlying
 container without permanently losing all of your customisations._
 
-## Images
+## Image Variations
+The Node-RED images come in different variations and are supported by manifest lists (auto-detect architecture).
+This makes it more easy to deploy in a multi architecture Docker environment. E.g. a Docker Swarm with mix of Raspberry Pi's and amd64 nodes.
 
-The following images are built for each Node-RED release, using a Node.js v8 base image.
+The tag naming convention is `<node-red-version>-<node-version>-<image-type>-<architecture>`, where:
+- `<node-red-version>` is the Node-RED version.
+- `<node-version>` is the Node JS version.
+- `<image-type>` is type of image and is optional, can be either _none_ or minimal.
+    - _none_ : is the default and has Python 2 & Python 3 + devtools installed
+    - minimal : has no Python installed and no devtools installed
+- `<architecture>` is the architecture of the Docker host system, can be either amd64, arm32v6, arm32v7, arm64.
 
-- **latest** - uses [official Node.JS v8 base image](https://hub.docker.com/_/node/).
-- **slim** uses [Alpine Linux base image](https://hub.docker.com/r/mhart/alpine-node/).
-- **rpi** uses [RPi-compatible base image](https://hub.docker.com/r/hypriot/rpi-node/).
+The minimal versions (without python and build tools) are not able to install nodes that require any locally compiled native code.
 
-Using Alpine Linux reduces the built image size (~100MB vs ~700MB) but removes
-standard dependencies that are required for native module compilation. If you
-want to add modules with native dependencies, use the standard image or extend
-the slim image with the missing packages.
+For example - to run the latest minimal version, you would run
 
-Additional images using a newer Node.js v10 base image are available with the following tags.
+        docker run -it -p 1880:1880 --name mynodered nodered/node-red:latest-minimal
 
-- **v10**
-- **slim-v10**
-- *Note*: there is currently no **rpi-v10** available
+The Node-RED images are based on [official Node JS Alpine Linux](https://hub.docker.com/_/node/) images to keep them as small as possible.
+Using Alpine Linux reduces the built image size, but removes standard dependencies that are required for native module compilation. If you want to add dependencies with native dependencies, extend the Node-RED image with the missing packages on running containers or build new images see [docker-custom](docker-custom/README.md).
 
-Node-RED releases are also tagged with a version label, allowing you to fix on a specific version: `latest:X.Y.Z`,
-`slim:X.Y.Z`, `rpi:X.Y.Z`.
+The following table shows the variety of provided Node-RED images.
 
-You can see a full list of the tagged releases [here](https://hub.docker.com/r/nodered/node-red-docker/tags/).
+| **Tag**                    |**Node**| **Arch** | **Python** |**Dev**| **Base Image**         |
+|----------------------------|--------|----------|------------|-------|------------------------|
+| 1.0.0-10-amd64             |   10   | amd64    |   2.x 3.x  |  yes  | amd64/node:10-alpine   |
+| 1.0.0-10-arm32v6           |   10   | arm32v6  |   2.x 3.x  |  yes  | arm32v6/node:10-alpine |
+| 1.0.0-10-arm32v7           |   10   | arm32v7  |   2.x 3.x  |  yes  | arm32v7/node:10-alpine |
+| 1.0.0-10-arm64v8           |   10   | arm64v8  |   2.x 3.x  |  yes  | arm64v8/node:10-alpine |
+|                            |        |          |            |       |                        |
+| 1.0.0-10-minimal-amd64     |   10   | amd64    |     no     |  no   | amd64/node:10-alpine   |
+| 1.0.0-10-minimal-arm32v6   |   10   | arm32v6  |     no     |  no   | arm32v6/node:10-alpine |
+| 1.0.0-10-minimal-arm32v7   |   10   | arm32v7  |     no     |  no   | arm32v7/node:10-alpine |
+| 1.0.0-10-minimal-arm64v8   |   10   | arm64v8  |     no     |  no   | arm64v8/node:10-alpine |
+
+
+| **Tag**                    |**Node**| **Arch** | **Python** |**Dev**| **Base Image**         |
+|----------------------------|--------|----------|------------|-------|------------------------|
+| 1.0.0-12-amd64             |   12   | amd64    |   2.x 3.x  |  yes  | amd64/node:12-alpine   |
+| 1.0.0-12-arm32v6           |   12   | arm32v6  |   2.x 3.x  |  yes  | arm32v6/node:12-alpine |
+| 1.0.0-12-arm32v7           |   12   | arm32v7  |   2.x 3.x  |  yes  | arm32v7/node:12-alpine |
+| 1.0.0-12-arm64v8           |   12   | arm64v8  |   2.x 3.x  |  yes  | arm64v8/node:12-alpine |
+|                            |        |          |            |       |                        |
+| 1.0.0-12-minimal-amd64     |   12   | amd64    |     no     |  no   | amd64/node:12-alpine   |
+| 1.0.0-12-minimal-arm32v6   |   12   | arm32v6  |     no     |  no   | arm32v6/node:12-alpine |
+| 1.0.0-12-minimal-arm32v7   |   12   | arm32v7  |     no     |  no   | arm32v7/node:12-alpine |
+| 1.0.0-12-minimal-arm64v8   |   12   | arm64v8  |     no     |  no   | arm64v8/node:12-alpine |
+
+- All images have bash, tzdata, nano, curl git and openssl tools pre-installed to support Node-RED's Projects feature.
+
+## Manifest Lists
+The following table shows the provided Manifest Lists.
+
+| **Tag**                                | **Node-RED Base Image**                    |
+|----------------------------------------|--------------------------------------------|
+| latest, 1.0.0,                         | nodered/node-red:1.0.0-10-amd64            |
+| latest-10, 1.0.0-10                    | nodered/node-red:1.0.0-10-arm32v6          |
+|                                        | nodered/node-red:1.0.0-10-arm32v7          |
+|                                        | nodered/node-red:1.0.0-10-arm64v8          |
+|                                        |                                            |
+| latest-minimal, 1.0.0-minimal,         | nodered/node-red:1.0.0-10-amd64-minimal    |
+| latest-10-minimal, 1.0.0-10-minimal    | nodered/node-red:1.0.0-10-arm32v6-minimal  |
+|                                        | nodered/node-red:1.0.0-10-arm32v7-minimal  |
+|                                        | nodered/node-red:1.0.0-10-arm64v8-minimal  |
+
+| **Tag**                                | **Node-RED Base Image**                    |
+|----------------------------------------|--------------------------------------------|
+| latest-12, 1.0.0-12                    | nodered/node-red:1.0.0-12-amd64            |
+|                                        | nodered/node-red:1.0.0-12-arm32v6          |
+|                                        | nodered/node-red:1.0.0-12-arm32v7          |
+|                                        | nodered/node-red:1.0.0-12-arm64v8          |
+|                                        |                                            |
+| latest-12-minimal, 1.0.0-12-minimal    | nodered/node-red:1.0.0-12-amd64-minimal    |
+|                                        | nodered/node-red:1.0.0-12-arm32v6-minimal  |
+|                                        | nodered/node-red:1.0.0-12-arm32v7-minimal  |
+|                                        | nodered/node-red:1.0.0-12-arm64v8-minimal  |
+
+With the support of Docker manifest list, there is no need to explicitly add the tag for the architecture to use.
+When a docker run command or docker service command or docker stack command is executed, docker checks which architecture is required and verifies if it is available in the docker repository. If it does, docker pulls the matching image for it.
+
+Therefore all tags regarding Raspberry PI's are dropped.
+
+For example: suppose you are running on a Raspberry PI 3B, which has arm32v7 as architecture. Then just run the following command to pull the image (tagged by `1.0.0-10-arm32v7`), and run the container.
+```
+docker run -it -p 1880:1880 --name mynodered nodered/node-red:latest
+```
+
+The same command can be used for running on an amd64 system, since docker discovers its running on a amd64 host and pulls the image with the matching tag (`1.0.0-10-amd64`).
+
+This gives the advantage that you don't need to know/specify which architecture you are running on and makes docker run commands and docker compose files more flexible and exchangeable across systems.
+
+## Raspberry PI - native GPIO support
+| BREAKING: Native GPIO support for Raspberry PI has been dropped! |
+| --- |
+The replacement for native GPIO is [node-red-node-pi-gpiod](https://github.com/node-red/node-red-nodes/tree/master/hardware/pigpiod).
+
+Disadvantages of the native GPIO support are:
+- Your Docker container needs to be deployed on the same Docker node/host on which you want to control the gpio.
+- Gain access to /dev/mem of your Docker node/host
+- privileged=true is not supported for `docker stack` command
+
+`node-red-node-pi-gpiod` solves all these disadvantages. With `node-red-node-pi-gpiod` it is possible to interact with gpio of multiple Raspberry Pi's from a single Node-RED container, and for multiple containers to access different gpio on the same Pi.
+
+### Quick Migration steps to `node-red-node-pi-gpiod`
+  1. Install `node-red-node-pi-gpiod` through the Node-RED pallette
+  2. Install and run `PiGPIOd daemon` on the host Pi.
+  3. Replace all native gpio nodes with `pi gpiod` nodes.
+  4. Configure `pi gpiod` nodes to connect to `PiGPIOd daemon`
+
+For install instruction details please refer to the `node-red-node-pi-gpiod` [README](https://github.com/node-red/node-red-nodes/tree/master/hardware/pigpiod#node-red-node-pi-gpiod)  
+
+## Host Directory As Volume (Persistent)
+To save your Node-RED user directory inside the container to a host directory outside the container, you can use the command below.
+But to allow access to this host directory, the node-red user (default uid=1000) inside the container must have the same uid as the owner of the host directory.
+To override the default uid and gid of the node-red user inside the the container you can use the option `--user="<my_host_uid>:<my_host_gid>"`:
+
+```
+$ docker run -it --user="<my_host_uid>:<my_host_gid>" -p 1880:1880 -v <host_directory>:/data --name mynodered nodered/node-red
+```
+
+Example:
+- Suppose you are running on a Raspberry PI with a user named 'pi' and group 'pi'.
+```
+$ whoami
+```
+- With this user create a directory '~/.node-red'.
+```
+$ mkdir ~/.node-red
+```
+- Verify newly created directory with:
+```
+$ ls -al ~/.node-red
+```
+This shows that user pi is owner of this directory:
+```
+ls -al ~/.node-red
+total 8
+drwxr-xr-x 2 pi pi 4096 May  7 20:55 .
+drwxr-xr-x 8 pi pi 4096 May  7 20:42 ..
+```
+
+- Now we want to have access to this '~/.node-red' directory with the container so that Node-RED can save user data to it.
+As we know we need to override the default uid (1000) of the node-red user inside the container with the uid of the pi user.
+For that we need to know the uid of user pi:
+```
+$ id pi
+```
+- The uid and gid of user pi are:
+```
+uid=1000(pi) gid=1000(pi) [...]
+```
+
+- So the final command becomes:
+```
+$ docker run -it --user="1000:1000" -p 1880:1880 -v ~/.node-red:/data --name mynodered nodered/node-red
+```
+
+Running a Node-RED container with a host directory mounted as the data volume,
+you can manually run `npm install` within your host directory. Files created in
+the host directory will automatically appear in the container's file system.
+
+Adding extra nodes to the container can be accomplished by
+running npm install locally.
+
+        $ cd ~/.node-red
+        $ npm install node-red-node-smooth
+        node-red-node-smooth@0.0.3 node_modules/node-red-node-smooth
+        $ docker stop mynodered
+        $ docker start mynodered
+
+_**Note** : Modules with a native dependencies will be compiled on the host
+machine's architecture. These modules will not work inside the Node-RED
+container unless the architecture matches the container's base image. For native
+modules, it is recommended to install using a local shell or update the
+project's package.json and re-build._
+
+## Docker Stack / Docker Compose
+
+Below an example of a Docker Compose file which can be run by `docker stack` or `docker-compose`.
+Please refer to the official Docker pages for more info about [Docker stack](https://docs.docker.com/engine/reference/commandline/stack/) and [Docker compose](https://docs.docker.com/compose/).
+
+```
+################################################################################
+# Node-RED Stack
+################################################################################
+#$ docker stack deploy node-red --compose-file docker-compose-node-red.yml
+################################################################################
+version: 3.7
+
+services:
+  node-red:
+    image: nodered/node-red:latest
+    environment:
+      - TZ=Europe/Amsterdam
+    ports:
+      - "1880:1880"
+    networks:
+      - node-red-net
+    volumes:
+      - /mnt/docker-cluster/node-red/data:/data
+
+networks:
+  node-red-net:
+
+```
+
+The above compose file:
+- creates a node-red service
+- pulls the latest node-red image
+- sets the timezone to Europe/Amsterdam
+- Maps the container port 1880 to the the host port 1880
+- creates a node-red-net network and attaches the container to this network
+- persists the `/data` dir inside the container to the `/mnt/docker-cluster/node-red/data` dir outside the container
 
 ## Project Layout
-
 This repository contains Dockerfiles to build the Node-RED Docker images listed above.
-
-Build these images with the following command...
-
-        $ docker build -f <version>/Dockerfile -t mynodered:<version> .
 
 ### package.json
 
@@ -123,8 +308,8 @@ Docker build process, the dependencies are installed under `/usr/src/node-red`.
 The main sections to modify are
 
     "dependencies": {
-        "node-red": "0.14.x",           <-- set the version of Node-RED here
-        "node-red-node-rbe": "*"        <-- add any extra npm packages here
+        "node-red": "^1.0.0",           <-- set the version of Node-RED here
+        "node-red-dashboard": "*"        <-- add any extra npm packages here
     },
 
 This is where you can pre-define any extra nodes you want installed every time
@@ -145,13 +330,13 @@ The flows configuration file is set using an environment parameter (**FLOWS**),
 which defaults to *'flows.json'*. This can be changed at runtime using the
 following command-line flag.
 
-        $ docker run -it -p 1880:1880 -e FLOWS=my_flows.json nodered/node-red-docker
+        $ docker run -it -p 1880:1880 -e FLOWS=my_flows.json nodered/node-red
 
 Node.js runtime arguments can be passed to the container using an environment
 parameter (**NODE_OPTIONS**). For example, to fix the heap size used by
 the Node.js garbage collector you would use the following command.
 
-        $ docker run -it -p 1880:1880 -e NODE_OPTIONS="--max_old_space_size=128" nodered/node-red-docker
+        $ docker run -it -p 1880:1880 -e NODE_OPTIONS="--max_old_space_size=128" nodered/node-red
 
 ## Adding Nodes
 
@@ -182,42 +367,12 @@ command you wish - e.g.
 
         $ cd /data
         $ npm install node-red-node-smooth
-        node-red-node-smooth@0.0.3 node_modules/node-red-node-smooth
         $ exit
         $ docker stop mynodered
         $ docker start mynodered
 
 Refreshing the browser page should now reveal the newly added node in the palette.
 
-### Host Directory As Volume
-
-Running a Node-RED container with a host directory mounted as the data volume,
-you can manually run `npm install` within your host directory. Files created in
-the host directory will automatically appear in the container's file system.
-
-This command mounts the host's node-red directory, containing the user's
-configuration and installed nodes, as the user configuration directory inside
-the container.
-
-        $ docker run -it -p 1880:1880 -v ~/.node-red:/data --name mynodered nodered/node-red-docker
-
-_**Having file permissions issues after mounting a host directory?**_
-_Docker maps the internal container uuid to 1000 on the host system. If you are running as a user with a different uuid, e.g. the second user added on a system, the container user account won't be able to read files on the host system. Fix this by using the `--run $USER` flag. See [here for more details](https://github.com/node-red/node-red-docker/issues/9)._
-
-Adding extra nodes to the container can be accomplished by
-running npm install locally.
-
-        $ cd ~/.node-red
-        $ npm install node-red-node-smooth
-        node-red-node-smooth@0.0.3 node_modules/node-red-node-smooth
-        $ docker stop mynodered
-        $ docker start mynodered
-
-_**Note** : Modules with a native dependencies will be compiled on the host
-machine's architecture. These modules will not work inside the Node-RED
-container unless the architecture matches the container's base image. For native
-modules, it is recommended to install using a local shell or update the
-project's package.json and re-build._
 
 ### Building Custom Image
 
@@ -228,13 +383,13 @@ This Dockerfile builds a custom Node-RED image with the flightaware module
 installed from NPM.
 
 ```
-FROM nodered/node-red-docker
+FROM nodered/node-red
 RUN npm install node-red-contrib-flightaware
 ```
 
 Alternatively, you can modify the package.json in this repository and re-build
 the images from scratch. This will also allow you to modify the version of
-Node-RED that is installed. See below for more details...
+Node-RED that is installed. See [README](docker-custom/README.md) under docker-custom directory.
 
 ## Managing User Data
 
@@ -253,10 +408,10 @@ Docker allows you to the current state of a container to a new image. This
 means you can persist your changes as a new image that can be shared on other
 systems.
 
-        $ docker commit mynodered custom-node-red-docker
+        $ docker commit mynodered custom-node-red
 
 If we destroy the ```mynodered``` container, the instance can be recovered by
-spawning a new container using the ```custom-node-red-docker``` image.
+spawning a new container using the ```custom-node-red``` image.
 
 ### Using Named Data Volumes
 
@@ -278,19 +433,19 @@ container using this volume.
         $ docker volume ls
         DRIVER              VOLUME NAME
         local               node_red_user_data
-        $ docker run -it -p 1880:1880 -v node_red_user_data:/data --name mynodered nodered/node-red-docker
+        $ docker run -it -p 1880:1880 -v node_red_user_data:/data --name mynodered nodered/node-red
 
 Using Node-RED to create and deploy some sample flows, we can now destroy the
 container and start a new instance without losing our user data.
 
         $ docker rm mynodered
-        $ docker run -it -p 1880:1880 -v node_red_user_data:/data --name mynodered nodered/node-red-docker
+        $ docker run -it -p 1880:1880 -v node_red_user_data:/data --name mynodered nodered/node-red
 
 ## Updating
 
 Updating the base container image is as simple as
 
-        $ docker pull nodered/node-red-docker
+        $ docker pull nodered/node-red
         $ docker stop mynodered
         $ docker start mynodered
 
@@ -298,14 +453,14 @@ Updating the base container image is as simple as
 
 The barest minimum we need to just run Node-RED is
 
-    $ docker run -d -p 1880 nodered/node-red-docker
+    $ docker run -d -p 1880 nodered/node-red
 
 This will create a local running instance of a machine - that will have some
 docker id number and be running on a random port... to find out run
 
     $ docker ps -a
-    CONTAINER ID        IMAGE                       COMMAND             CREATED             STATUS                     PORTS                     NAMES
-    4bbeb39dc8dc        nodered/node-red-docker:latest   "npm start"         4 seconds ago       Up 4 seconds               0.0.0.0:49154->1880/tcp   furious_yalow
+    CONTAINER ID        IMAGE                            COMMAND             CREATED             STATUS                     PORTS                     NAMES
+    4bbeb39dc8dc        nodered/node-red:latest          "npm start"         4 seconds ago       Up 4 seconds               0.0.0.0:49154->1880/tcp   furious_yalow
     $
 
 You can now point a browser to the host machine on the tcp port reported back, so in the example
@@ -317,13 +472,13 @@ You can link containers "internally" within the docker runtime by using the --li
 
 For example I have a simple MQTT broker container available as
 
-        docker run -it --name mybroker nodered/node-red-docker
+        docker run -it --name mybroker nodered/node-red
 
 (no need to expose the port 1883 globally unless you want to... as we do magic below)
 
 Then run nodered docker - but this time with a link parameter (name:alias)
 
-        docker run -it -p 1880:1880 --name mynodered --link mybroker:broker nodered/node-red-docker
+        docker run -it -p 1880:1880 --name mynodered --link mybroker:broker nodered/node-red
 
 the magic here being the `--link` that inserts a entry into the node-red instance
 hosts file called *broker* that links to the mybroker instance....  but we do
@@ -346,31 +501,31 @@ Here is a list of common issues users have reported with possible solutions.
 If you are seeing *permission denied* errors opening files or accessing host devices, try running the container as the root user.
 
 ```
-docker run -it -p 1880:1880 --name mynodered --user=root nodered/node-red-docker
+docker run -it -p 1880:1880 --name mynodered --user=root nodered/node-red
 ```
 
 References:
 
-https://github.com/node-red/node-red-docker/issues/15
+https://github.com/node-red/node-red/issues/15
 
-https://github.com/node-red/node-red-docker/issues/8
+https://github.com/node-red/node-red/issues/8
 
 ### Accessing Host Devices
 
 If you want to access a device from the host inside the container, e.g. serial port, use the following command-line flag to pass access through.
 
 ```
-docker run -it -p 1880:1880 --name mynodered --device=/dev/ttyACM0 nodered/node-red-docker
+docker run -it -p 1880:1880 --name mynodered --device=/dev/ttyACM0 nodered/node-red
 ```
 References:
-https://github.com/node-red/node-red-docker/issues/15
+https://github.com/node-red/node-red/issues/15
 
 ### Setting Timezone
 
 If you want to modify the default timezone, use the TZ environment variable with the [relevant timezone](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones).
 
 ```
-docker run -it -p 1880:1880 --name mynodered -e TZ="Europe/London" nodered/node-red-docker
+docker run -it -p 1880:1880 --name mynodered -e TZ=Europe/London nodered/node-red
 ```
 
 References:
