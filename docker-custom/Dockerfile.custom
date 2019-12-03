@@ -66,20 +66,25 @@ COPY --from=build /usr/src/node-red/prod_node_modules ./node_modules
 # Chown, install devtools & Clean up
 RUN chown -R node-red:node-red /usr/src/node-red && \
     /tmp/install_devtools.sh && \
-    rm /tmp/* && \
-    rm /usr/bin/qemu-$QEMU_ARCH-static
+    rm /tmp/*
 
 USER node-red
 
 # Env variables
-ENV NODE_RED_VERSION=$NODE_RED_VERSION
-ENV FLOWS=flows.json
-ENV NODE_PATH=/usr/src/node-red/node_modules:/data/node_modules
+ENV NODE_RED_VERSION=$NODE_RED_VERSION \
+    NODE_PATH=/usr/src/node-red/node_modules:/data/node_modules \
+    FLOWS=flows.json
+
+# ENV NODE_RED_ENABLE_SAFE_MODE=true    # Uncomment to enable safe start mode (flows not running)
+# ENV NODE_RED_ENABLE_PROJECTS=true     # Uncomment to enable projects option
 
 # User configuration directory volume
 VOLUME ["/data"]
 
 # Expose the listening port of node-red
 EXPOSE 1880
+
+# Add a healthcheck (default every 30 secs)
+HEALTHCHECK CMD curl http://localhost:1880/ || exit 1
 
 ENTRYPOINT ["npm", "start", "--", "--userDir", "/data"]
