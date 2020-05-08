@@ -8,3 +8,9 @@ settings-*.js
 # Created by .ignore support plugin (hsz.mobi)
 /node-red-docker.iml
 /.idea/
+
+.env
+/data*/
+/settings*.js
+/data*.tar.gz
+*~

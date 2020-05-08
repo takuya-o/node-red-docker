@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 # user指定した場合にもノードpacketのインストール可能にする
 if [ -f .env ];then
-    . .env
+    . $PWD/.env
 fi
 if [ -z "$CUID" ];then
     #コンテナ用のCUIDが無ければ$UIDから作る

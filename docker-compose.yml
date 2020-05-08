@@ -14,9 +14,11 @@ services:
     #- TZ="Asia/Tokyo"
     #- NODE_OPTIONS=--max-old-space-size=2048 --stack-size=984
     - NODE_OPTIONS=${NODE_OPTIONS}
+#    - GOOGLE_APPLICATION_CREDENTIALS=/data/adc.json
     #Secret Variablesはgitlab-ciのときだけ
 #    - FLOWS=my_flows.json
 #    - NODE_OPTIONS=--max_old_space_side=128
+    - GOOGLE_CLOUD_PROJECT=${GOOGLE_CLOUD_PROJECT}
     user: $CUID:$CGID
     volumes:
     - /etc/localtime:/etc/localtime:ro
@@ -25,8 +27,14 @@ services:
 #    ports:
 #    - "1880:1880"
     networks:
-    - node-red-net
+      default:
+        ipv4_address: $IP_ADDRESS
     hostname: node-red
 
 networks:
-  node-red-net:
+  default:
+    ipam:
+      driver: default
+      config:
+      - subnet: $NETWORK
+
