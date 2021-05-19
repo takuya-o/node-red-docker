@@ -8,7 +8,7 @@ services:
   node-red:
     #  <node-red-version>-<node-version>-<image-type>
     #image: nodered/node-red:1.3.2-10-minimal
-    image: nodered/node-red$NODE_VERSION
+    image: nodered/node-red$VERSION
     restart: always
     environment:
     #- TZ="Asia/Tokyo"
