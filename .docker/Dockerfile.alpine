@@ -1,13 +1,9 @@
-ARG ARCH=amd64
-ARG NODE_VERSION=10
+ARG NODE_VERSION=12
 ARG OS=alpine
 
 #### Stage BASE ########################################################################################################
-FROM ${ARCH}/node:${NODE_VERSION}-${OS} AS base
+FROM node:${NODE_VERSION}-${OS} AS base
 ARG QEMU_ARCH
-
-# QEMU - Quick Emulation
-COPY tmp/qemu-$QEMU_ARCH-static /usr/bin/qemu-$QEMU_ARCH-static
 
 # Copy scripts
 COPY .docker/scripts/*.sh /tmp/
@@ -35,6 +31,10 @@ RUN set -ex && \
 
 # Set work directory
 WORKDIR /usr/src/node-red
+
+# Setup SSH known_hosts file
+COPY .docker/known_hosts.sh .
+RUN ./known_hosts.sh /etc/ssh/ssh_known_hosts && rm /usr/src/node-red/known_hosts.sh
 
 # package.json contains Node-RED NPM module and node dependencies
 COPY package.json .
@@ -77,14 +77,14 @@ COPY --from=build /usr/src/node-red/prod_node_modules ./node_modules
 # Chown, install devtools & Clean up
 RUN chown -R node-red:root /usr/src/node-red && \
     /tmp/install_devtools.sh && \
-    rm -r /tmp/* && \
-    rm /usr/bin/qemu-$QEMU_ARCH-static
+    rm -r /tmp/*
 
 USER node-red
 
 # Env variables
 ENV NODE_RED_VERSION=$NODE_RED_VERSION \
     NODE_PATH=/usr/src/node-red/node_modules:/data/node_modules \
+    PATH=/usr/src/node-red/node_modules/.bin:${PATH} \
     FLOWS=flows.json
 
 # ENV NODE_RED_ENABLE_SAFE_MODE=true    # Uncomment to enable safe start mode (flows not running)
