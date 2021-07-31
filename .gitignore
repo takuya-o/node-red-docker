@@ -12,5 +12,6 @@ settings-*.js
 .env
 /data*/
 /settings*.js
+/settings*.diff
 /data*.tar.gz
 *~

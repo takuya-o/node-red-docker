@@ -11,13 +11,16 @@ services:
     image: nodered/node-red$VERSION
     restart: always
     environment:
-    #- TZ="Asia/Tokyo"
-    #- NODE_OPTIONS=--max-old-space-size=2048 --stack-size=984
+    # See: https://github.com/node-red/node-red-docker/blob/master/docker-custom/Dockerfile.custom
+    #- NODE_RED_ENABLE_SAFE_MODE=true
+    - NODE_RED_ENABLE_PROJECTS=true
+    #- FLOWS=flows.json
+    #- NODE_OPTIONS=--max-old-space-size=1456
     - NODE_OPTIONS=${NODE_OPTIONS}
+    #
+    - TZ="Asia/Tokyo"
 #    - GOOGLE_APPLICATION_CREDENTIALS=/data/adc.json
     #Secret Variablesはgitlab-ciのときだけ
-#    - FLOWS=my_flows.json
-#    - NODE_OPTIONS=--max_old_space_side=128
     - GOOGLE_CLOUD_PROJECT=${GOOGLE_CLOUD_PROJECT}
     user: $CUID:$CGID
     volumes:
