@@ -6,7 +6,7 @@ set +eu
 docker-compose pull
 
 docker-compose down
-docker-compsoe up -d
+docker-compose up -d
 
 # tensolflow 高速化パッケージのインストール
 # 準備 enablePackageInstallOnUser.shより
@@ -24,4 +24,8 @@ fi
 docker-compose exec -u root node-red sh -c "mkdir /.npm /.config && chown $CUID:$CGID /.npm /.config"
 
 # 実際のインストール
-docker-compose exec node-red sh -c "cd/data && npm install @tensorflow/tfjs-node && npm audit fix"
+docker-compose exec node-red sh -c "cd /data && npm install @tensorflow/tfjs-node && npm audit fix"
+docker-compose restart node-red
+
+# defaultのsetting.jsの保存
+docker cp `docker-compose ps -q`:/usr/src/node-red/node_modules/node-red/settings.js settings.`git tag -l "v*"|tail -1|sed 's/^v//'`.js
