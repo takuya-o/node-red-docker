@@ -28,4 +28,4 @@ docker-compose exec node-red sh -c "cd /data && npm install @tensorflow/tfjs-nod
 docker-compose restart node-red
 
 # defaultのsetting.jsの保存
-docker cp `docker-compose ps -q`:/usr/src/node-red/node_modules/node-red/settings.js settings.`git tag -l "v*"|tail -1|sed 's/^v//'`.js
+docker cp `docker-compose ps -q`:/usr/src/node-red/node_modules/node-red/settings.js settings.`git tag -l --sort=creatordate "v*"|egrep "^v1"|tail -1|sed 's/^v//'`.js
