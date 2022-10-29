@@ -3,7 +3,7 @@
 # docker-compose-run.sh直後は./dataがなくエラーなる
 # data/settings.jsなどをコピー
 
-ID=`docker-compose ps -q`
+ID=`docker compose ps -q`
 
 if [ -d ./data ];then
     echo "Already have ./data"

@@ -6,9 +6,9 @@
 
 # docker-compose-run.shすると ./data以下に証明書や
 #setting.jsが無くて動かないので、
-# docker-compose stop
+# docker compose stop
 # ./makeHttpsKey.sh
-# docker-compose start
+# docker compose start
 # すると動くようになる
 
 
@@ -24,7 +24,7 @@ openssl req -new -key privkey.pem -out private-csr.pem
 openssl x509 -req -days 365 -in private-csr.pem -signkey privkey.pem -out fullchain.pem
 
 #Dockerfileで作成した settings.js 取得
-ID=`docker-compose ps -q`
+ID=`docker compose ps -q`
 docker cp $ID:/data ..
 docker cp $ID:/usr/src/node-red/node_modules/node-red/settings.js ../data/
 sed -i.bak -e 's@^//\(var fs = require("fs");\)@\1\n&@' \

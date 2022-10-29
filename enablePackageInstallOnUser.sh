@@ -13,4 +13,4 @@ if [ -z "$CGID" ];then
     #コンテナ用のCGIDが無ければ$CUIDから作る
     CGID=`uid -g $CUID`
 fi
-docker-compose exec -u root node-red sh -c "mkdir /.npm /.config && chown $CUID:$CGID /.npm /.config"
+docker compose exec -u root node-red sh -c "mkdir /.npm /.config && chown $CUID:$CGID /.npm /.config"
