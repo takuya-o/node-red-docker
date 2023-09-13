@@ -24,7 +24,7 @@ openssl req -new -key privkey.pem -out private-csr.pem
 openssl x509 -req -days 365 -in private-csr.pem -signkey privkey.pem -out fullchain.pem
 
 #Dockerfileで作成した settings.js 取得
-ID=`docker compose ps -q`
+ID=`docker compose ps -q node-red`
 docker cp $ID:/data ..
 docker cp $ID:/usr/src/node-red/node_modules/node-red/settings.js ../data/
 sed -i.bak -e 's@^//\(var fs = require("fs");\)@\1\n&@' \

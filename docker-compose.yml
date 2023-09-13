@@ -11,7 +11,8 @@ services:
     image: nodered/node-red$VERSION
     restart: always
     environment:
-    # See: https://github.com/node-red/node-red-docker/blob/master/docker-custom/Dockerfile.custom
+    #- PORT=1880
+    # See: https://github.com/node-red/node-red-docker#startup
     #- NODE_RED_ENABLE_SAFE_MODE=true
     - NODE_RED_ENABLE_PROJECTS=true
     #- FLOWS=flows.json
@@ -20,7 +21,7 @@ services:
     #
     - TZ="Asia/Tokyo"
 #    - GOOGLE_APPLICATION_CREDENTIALS=/data/adc.json
-    #Secret Variablesはgitlab-ciのときだけ
+    #Secret Variables
     - GOOGLE_CLOUD_PROJECT=${GOOGLE_CLOUD_PROJECT}
     user: $CUID:$CGID
     volumes:
@@ -33,6 +34,40 @@ services:
       default:
         ipv4_address: $IP_ADDRESS
     hostname: node-red
+
+  node-red01:
+    image: nodered/node-red$VERSION
+    restart: unless-stopped
+    environment:
+    - NODE_RED_ENABLE_PROJECTS=true
+    - NODE_OPTIONS=${NODE_OPTIONS}
+    - TZ="Asia/Tokyo"
+    #Secret Variables
+    - GOOGLE_CLOUD_PROJECT=${GOOGLE_CLOUD_PROJECT}
+    user: $CUID:$CGID
+    volumes:
+    - ./data01:/data
+    networks:
+      default:
+        ipv4_address: $IP_ADDRESS01
+    hostname: node-red01
+
+  node-red02:
+    image: nodered/node-red:2.1.4
+    restart: unless-stopped
+    environment:
+    - NODE_RED_ENABLE_PROJECTS=true
+    - NODE_OPTIONS=${NODE_OPTIONS}
+    - TZ="Asia/Tokyo"
+    #Secret Variables
+    - GOOGLE_CLOUD_PROJECT=${GOOGLE_CLOUD_PROJECT}
+    user: $CUID:$CGID
+    volumes:
+    - ./data02:/data
+    networks:
+      default:
+        ipv4_address: $IP_ADDRESS02
+    hostname: node-red02
 
 networks:
   default:
