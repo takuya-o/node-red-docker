@@ -17,12 +17,12 @@ if [ "$1" = "-f" ];then
     sed 's/^v//')
   git merge -Xtheirs -m "Upgrade to ${NR_VERSION} from upstream" master
   git push
-  git tag -s -a v${NR_VERSION}-docker-compose -m "Upgrade to ${NR_VERSION} from upstream"
+  git tag -s -a v${NR_VERSION}-docker-compose -m "Upgrade to ${NR_VERSION} from upstream" || true # ignore exist error
   git push origin refs/tags/v${NR_VERSION}-docker-compose
 
   # dockerイメージ保存
   docker compose pull
-  (. .env &&
+  (. ./.env &&
     NODE_VERSION=$(echo ${VERSION}|sed -e 's/^:[^-]*//') &&
     TAG=$CI_REGISTRY_IMAGE:${NR_VERSION}${NODE_VERSION} &&
     docker tag nodered/node-red$VERSION $TAG &&
