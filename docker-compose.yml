@@ -2,7 +2,6 @@
 # Created by Takuya Ono
 # see: https://hub.docker.com/r/nodered/node-red-docker/
 
-version: '3.7'
 services:
 
   node-red:
