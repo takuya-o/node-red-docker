@@ -35,6 +35,8 @@ services:
     hostname: node-red
 
   node-red01:
+    profiles:
+      - "01"
     image: nodered/node-red$VERSION
     restart: unless-stopped
     environment:
@@ -52,6 +54,8 @@ services:
     hostname: node-red01
 
   node-red02:
+    profiles:
+      - "02"
     image: nodered/node-red:2.1.4
     restart: unless-stopped
     environment:
