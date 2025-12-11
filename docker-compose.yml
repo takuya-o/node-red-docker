@@ -18,7 +18,7 @@ services:
     #- NODE_OPTIONS=--max-old-space-size=1456
     - NODE_OPTIONS=${NODE_OPTIONS}
     #
-    - TZ="Asia/Tokyo"
+    - TZ=${TZ:-Asia/Tokyo}
 #    - GOOGLE_APPLICATION_CREDENTIALS=/data/adc.json
     #Secret Variables
     - GOOGLE_CLOUD_PROJECT=${GOOGLE_CLOUD_PROJECT}
@@ -42,7 +42,7 @@ services:
     environment:
     - NODE_RED_ENABLE_PROJECTS=true
     - NODE_OPTIONS=${NODE_OPTIONS}
-    - TZ="Asia/Tokyo"
+    - TZ=Asia/Tokyo
     #Secret Variables
     - GOOGLE_CLOUD_PROJECT=${GOOGLE_CLOUD_PROJECT}
     user: $CUID:$CGID
@@ -61,7 +61,7 @@ services:
     environment:
     - NODE_RED_ENABLE_PROJECTS=true
     - NODE_OPTIONS=${NODE_OPTIONS}
-    - TZ="Asia/Tokyo"
+    - TZ=Asia/Tokyo
     #Secret Variables
     - GOOGLE_CLOUD_PROJECT=${GOOGLE_CLOUD_PROJECT}
     user: $CUID:$CGID
